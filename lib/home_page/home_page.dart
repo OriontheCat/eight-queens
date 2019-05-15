@@ -26,20 +26,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   FutureBuilder generateGrid() {
-    return FutureBuilder(future: () async {
-      List<Future<ChessBoard>> chessBoardGenerators =
-          List.generate(2, (_) => ChessBoard.random());
-      return await Future.wait(chessBoardGenerators);
-    }(), builder: (context, snapshot) {
-      if (!snapshot.hasData) {
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-      chessBoards = snapshot.data;
-      chessBoards.sort();
-      return buildGrid();
-    });
+    return FutureBuilder(
+        future: compute<List<ChessBoard>, Object>((_) {
+          
+        }, null),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          chessBoards = snapshot.data;
+          chessBoards.sort();
+          return buildGrid();
+        });
   }
 
   GridView buildGrid() {
@@ -78,7 +78,8 @@ class _HomePageState extends State<HomePage> {
     //         }
     //       };
     Function onPressed = () async {
-      var newChessBoard = (await chessBoards.first.procreate(chessBoards.last));
+      ChessBoard newChessBoard =
+          await await chessBoards.first.procreate(chessBoards.last);
       setState(() {
         chessBoards[1] = newChessBoard;
       });
